@@ -8,8 +8,8 @@
 - When game is completed, a loading screen is shown instead of game over message
 
 ## What I fixed
-- *Issues mentioned above
-- Added parent container for dollar notes in the tray
+*Issues mentioned above
+Added parent container for dollar notes in the tray
 
 ## Trade-offs/Assumptions made
 - This is a web application for solely large screens
