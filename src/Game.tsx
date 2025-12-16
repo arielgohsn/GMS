@@ -14,8 +14,13 @@ function GameComponent({ gs }: GameServiceProps) {
     // wait for assets to be loaded
     gs.preloadAssets()
       .then(() => {
+        gs.startSession();
+
         gs.initState({
           cash: emptyCash(),
+          lives: gs.getCurrLevelDetails().lives,
+          customer: 0,
+          remainingLives: gs.getCurrLevelDetails().lives,
         });
 
         gs.addSessionEndListner((result) => {
@@ -54,7 +59,11 @@ function GameComponent({ gs }: GameServiceProps) {
     return <h1>Game Over!</h1>;
   }
 
-  return <CashierChaos />;
+  return (
+    <GameServiceWrapper gs={gs}>
+      <CashierChaos />
+    </GameServiceWrapper>
+  );
 }
 
 // whatever you do just make sure you export this
