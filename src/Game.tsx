@@ -50,13 +50,15 @@ function GameComponent({ gs }: GameServiceProps) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  
+  if (gs.isGameComplete()) {
+    return <h1>Game Over!</h1>;
+  }
 
   if (showInstructions) {
     return <Instructions onStart={() => (setShowInstruction(false), (isInstructionsShownAlready = true))} />;
   } else if (!isGameReady) {
     return <CenterLoading />;
-  } else if (gs.isGameComplete()) {
-    return <h1>Game Over!</h1>;
   }
 
   return (
