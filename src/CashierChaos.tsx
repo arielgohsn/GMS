@@ -41,7 +41,7 @@ export function CashierChaos() {
   const { cash, customer, remainingLives } = gs.useGameState();
   const { result, setResult, resetResult } = useResult();
 
-  useEffect(() => {
+  const handleSubmit = useEffect(() => {
     if (!result) return;
 
     setTimeout(() => {
@@ -84,15 +84,15 @@ export function CashierChaos() {
       >
         <img src={customerSrc} className="absolute right-[5%] h-1/2 bottom-[10%]" />
 
-        <div className="absolute bottom-0 left-0 w-1/2">
-          <img src={gs.assets.cashRegister} className="-mb-1" />
+        <div className="absolute bottom-0 left-[20%] w-2/3 h-full">
+          <img src={gs.assets.cashRegister} className="w-1/2 h-full" />
 
-          <div className="absolute top-[12%] left-[12%] text-lg text-white font-medium">
+          <div className="absolute top-[16%] left-[12%] text-xl text-white font-medium">
             <p>Received: </p>
             <p>Total: </p>
             <p className={cashRegisterWorking ? "text-yellow-500" : "text-red-400"}>Change: </p>
           </div>
-          <div className="absolute top-[12%] right-[12%] text-right text-lg text-white font-medium">
+          <div className="absolute top-[16%] left-[30%] text-right text-xl text-white font-medium">
             <p>$100.00</p>
             <p>
               ${100 - hundreds - borrow}.{borrow * 100 - cents}
@@ -106,11 +106,12 @@ export function CashierChaos() {
         <div className="absolute bottom-0 right-0 w-1/2">
           <img src={gs.assets.whiteTray} className="scale-[1.4]" />
 
-          <div id="gs-money-counter" className="absolute inset-y-0 z-10 flex h-5 gap-1 p-1 md:gap-4 lg:gap-6">
+          <div id="gs-money-counter" className="absolute inset-y-0 z-10 flex h-full gap-1 p-1">
+            <div className="flex flex-row items-center">
             {HUNDREDS.map((x) => (
               <button
                 key={x}
-                className="relative w-10 md:w-24 lg:w-28"
+                className="relative"
                 onClick={() => gs.updateState({ cash: { ...cash, [x]: cash[x] - 1 } })}
                 style={{ display: cash[x] ? undefined : "none" }}
               >
@@ -123,7 +124,7 @@ export function CashierChaos() {
                 <motion.img key={`${x}-${cash[x]}`} layoutId={`${x}-${cash[x]}`} src={gs.assets["dollar_" + x]} />
               </button>
             ))}
-
+            </div>
             <div className="flex flex-col items-center ml-auto justify-evenly">
               {CENTS.map((x) => (
                 <button
@@ -187,8 +188,13 @@ export function CashierChaos() {
         <button
           className="block pt-1 pb-2 mx-auto text-xl font-bold text-white bg-green-600 shadow-xl rounded-xl w-80 md:scale-125 lg:scale-150"
           onClick={() => {
-            const a_hundreds = [20, 10, 5, 2, 1].map((x) => cash[x] * x).reduce((a, b) => a + b);
-            const a_cents = [0.5, 0.2, 0.1].map((x) => Math.round(cash[x] * x * 100)).reduce((a, b) => a + b);
+            const a_hundreds = [20, 10, 5, 2].map((x) => cash[x] * x).reduce((a, b) => a + b);
+            const a_cents = [1, 0.5, 0.2, 0.1].map((x) => Math.round(cash[x] * x * 100)).reduce((a, b) => a + b);
+            const expectedChange = hundreds * 100 + cents; // in cents to avoid precision issues
+            const actualChange = a_hundreds * 100 + a_cents;
+
+            actualChange === expectedChange ? setResult("success") : setResult("error");
+            handleSubmit;
           }}
         >
           SUBMIT
